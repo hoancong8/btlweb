@@ -19,19 +19,20 @@
 
         <div class="d-flex flex-wrap gap-3">
             @foreach (var cat in new[] {
-                        new {Icon="food.svg", Name="Ẩm thực"},
-                        new {Icon="clothes.svg", Name="Làm đẹp"},
-                        new {Icon="beautify.svg", Name="Spa"},
-                        new {Icon="Repair.svg", Name="Sửa chữa"},
-                        new {Icon="Mallbag.svg", Name="Mua sắm"},
-                        new {Icon="Book.svg", Name="Học tập"} })
+                        new {Icon="food.svg", Name="Ẩm thực", Id=1},
+                        new {Icon="clothes.svg", Name="Làm đẹp", Id=2},
+                        new {Icon="beautify.svg", Name="Spa", Id=3},
+                        new {Icon="Repair.svg", Name="Sửa chữa", Id=4},
+                        new {Icon="Mallbag.svg", Name="Mua sắm", Id=5},
+                        new {Icon="Book.svg", Name="Học tập", Id=6} })
             {
-                <div class="category-card text-center bg-white text-dark rounded-3 p-3 shadow-sm">
+                <a href="/Service/Index/@cat.Id" class="category-card text-center bg-white text-dark rounded-3 p-3 shadow-sm">
                     <img src="~/uploads/icons/@cat.Icon" width="40" height="40" alt="@cat.Name" />
                     <div class="mt-2 fw-semibold">@cat.Name</div>
-                </div>
+                </a>
             }
         </div>
+
     </div>
 </div>
 

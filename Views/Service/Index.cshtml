@@ -1,0 +1,27 @@
+﻿@model List<BTL.Models.Service>
+
+@{
+    ViewData["Title"] = "Dịch vụ - " + ViewData["CategoryName"];
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Dịch vụ thuộc danh mục: @ViewData["CategoryName"]</h2>
+
+    <div class="row">
+        @foreach (var service in Model)
+        {
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="card shadow-sm mb-4">
+                    <img src="@service.ImageUrl" class="card-img-top" alt="@service.ItemName" />
+                    <div class="card-body">
+                        <h5 class="card-title">@service.ItemName</h5>
+                        <p class="card-text">@service.Description</p>
+                        <p class="card-text"><strong>Địa chỉ:</strong> @service.Address</p>
+                        <p class="card-text"><strong>Đánh giá trung bình:</strong> @service.AvgRating</p>
+                        <a href="@Url.Action("Details", "Service", new { id = service.ItemID })" class="btn btn-primary">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

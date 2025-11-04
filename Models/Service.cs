@@ -13,6 +13,7 @@ namespace BTL.Models
         public int CategoryID { get; set; }
         public int UserID { get; set; }
         public string Address { get; set; }
+        public string ImageUrl { get; set; }
         public double? AvgRating { get; set; }
         public DateTime CreateAt { get; set; } = DateTime.Now;
 
