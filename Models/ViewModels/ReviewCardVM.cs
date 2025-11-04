@@ -3,6 +3,7 @@
     public class ReviewCardVM
     {
         public int ReviewID { get; set; }
+        public int UserID { get; set; }
         public string UserName { get; set; }
         public string AvatarUrl { get; set; }
         public string Title { get; set; }

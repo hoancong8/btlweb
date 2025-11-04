@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace BTL.Models
 {
-    [Table("tblService")] 
+    [Table("tblService")]
     public class Service
     {
         [Key]
@@ -11,15 +11,12 @@ namespace BTL.Models
 
         [Required]
         public string ItemName { get; set; }
-
         public string? Description { get; set; }
-
         public int CategoryID { get; set; }
-
         public int UserID { get; set; }
-
+        
         public string Address { get; set; }
-
+        
         public double? AvgRating { get; set; }
 
         public string? ImageUrl { get; set; } 

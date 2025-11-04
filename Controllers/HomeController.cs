@@ -19,8 +19,10 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+        // Lấy UserID của người dùng hiện tại từ session
         int currentUserId = HttpContext.Session.GetInt32("UserID") ?? 0;
 
+        // Truy vấn dữ liệu từ cơ sở dữ liệu và chuyển thành danh sách các ReviewCardVM
         var reviews = _context.Review
             .Include(r => r.User)
             .Include(r => r.RvImages)
@@ -28,6 +30,7 @@ public class HomeController : Controller
             .Select(r => new ReviewCardVM
             {
                 ReviewID = r.ReviewID,
+                UserID = r.UserID,  // Thêm UserID vào đối tượng ReviewCardVM
                 UserName = r.User.FullName,
 
                 // AvatarUrl (nếu null → avatar default)
@@ -56,8 +59,10 @@ public class HomeController : Controller
             })
             .ToList();
 
+        // Trả về View với danh sách review
         return View(reviews);
     }
+
 
     public IActionResult Privacy()
     {

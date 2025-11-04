@@ -56,24 +56,30 @@ namespace BTL.Controllers
             if (review == null)
                 return NotFound();
 
+            var service = _context.Services
+                .FirstOrDefault(s => s.ItemID == review.ItemID);
+
+            if (service == null)
+                return NotFound();
+
             var vm = new ReviewDetailVM
             {
                 ReviewID = id,
                 UserID = userId,
-
                 UserName = review.User.FullName,
                 AvatarUrl = review.User.AvatarUrl ?? "/uploads/avatars/default.png",
                 CurrentUserAvatar = _context.Users.Find(userId)?.AvatarUrl ?? "/uploads/avatars/default.png",
-
                 Title = review.Title,
                 Content = review.Content,
                 CreateAt = review.CreateAt,
-
                 MainImage = review.RvImages.FirstOrDefault()?.ImageUrl ?? "/uploads/reviews/default.png",
-
                 IsLiked = _context.Likes.Any(x => x.ReviewID == id && x.UserID == userId),
                 LikeCount = _context.Likes.Count(x => x.ReviewID == id),
-
+                ItemID = review.ItemID,
+                ServiceName = service.ItemName,
+                ServiceDescription = service.Description,
+                ServiceAddress = service.Address,
+                ServiceImageUrl = service.ImageUrl,
                 Comments = review.Comments
                     .OrderByDescending(c => c.CreateAt)
                     .Select(c => new CommentVM
@@ -87,6 +93,41 @@ namespace BTL.Controllers
 
             return View(vm);
         }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost]
+public IActionResult AddComment(int reviewId, string content)
+{
+    int userId = HttpContext.Session.GetInt32("UserID") ?? 0;
+
+    if (userId == 0)
+        return Json(new { success = false, message = "Bạn cần đăng nhập để bình luận." });
+
+    var comment = new Comment
+    {
+        ReviewID = reviewId,
+        UserID = userId,
+        CommentText = content,
+        CreateAt = DateTime.Now
+    };
+
+    _context.Comments.Add(comment);
+    _context.SaveChanges();
+
+    var user = _context.Users.Find(userId);
+
+    return Json(new
+    {
+        success = true,
+        avatar = user?.AvatarUrl ?? "/uploads/avatars/default.png",
+        userName = user?.FullName ?? "Người dùng",
+        text = content,
+        time = comment.CreateAt.ToString("HH:mm dd/MM")
+    });
+}
 
     }
 }

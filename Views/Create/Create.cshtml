@@ -1,0 +1,130 @@
+﻿@model BTL.Models.ViewModels.ReviewViewModel
+
+@{
+    ViewData["Title"] = "Viết đánh giá";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 bg-white p-4 rounded-4 shadow-lg">
+            <h3 class="text-center mb-4">Chia sẻ trải nghiệm của bạn về dịch vụ</h3>
+
+            <!-- Chọn dịch vụ đánh giá -->
+            <form method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label for="service" class="form-label fw-semibold">Chọn dịch vụ bạn muốn đánh giá</label>
+                    <select id="service" name="SelectedServiceID" class="form-control">
+                        <option value="">Chọn dịch vụ...</option>
+                        @foreach (var service in Model.Services)
+                        {
+                            <option value="@service.ItemID">@service.ItemName</option>
+                        }
+                    </select>
+                    @Html.ValidationMessageFor(model => model.SelectedServiceID)
+                </div>
+
+                <!-- Đánh giá sao -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Đánh giá</label>
+                    <div class="stars">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <input type="radio" class="star-input" name="Rating" value="@i" id="star-@i">
+                            <label for="star-@i" class="star-label"><i class="bi bi-star-fill"></i></label>
+                        }
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Rating)
+                </div>
+
+                <!-- Tiêu đề đánh giá -->
+                <div class="mb-3">
+                    <label for="title" class="form-label fw-semibold">Tiêu đề của bạn</label>
+                    <input type="text" id="title" name="Title" class="form-control" placeholder="Viết tiêu đề đánh giá" value="@Model.Title" />
+                    @Html.ValidationMessageFor(model => model.Title)
+                </div>
+
+                <!-- Nội dung đánh giá -->
+                <div class="mb-3">
+                    <label for="content" class="form-label fw-semibold">Hãy chia sẻ trải nghiệm của bạn</label>
+                    <textarea id="content" name="Content" class="form-control" rows="4" placeholder="Hãy chia sẻ trải nghiệm của bạn...">@Model.Content</textarea>
+                    @Html.ValidationMessageFor(model => model.Content)
+                </div>
+
+                <!-- Thêm hình ảnh -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Thêm hình ảnh</label>
+                    <input type="file" class="form-control" name="imageFile" />
+                </div>
+
+                <!-- Nút Submit và Hủy -->
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-secondary">Hủy</button>
+                    <button type="submit" class="btn btn-danger">Đăng tải</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .stars {
+        display: flex;
+        justify-content: flex-start;
+        gap: 5px;
+    }
+
+    .star-input {
+        display: none;
+    }
+
+    .star-label {
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #d3d3d3;
+    }
+
+        .star-input:checked ~ .star-label,
+        .star-label:hover,
+        .star-label:hover ~ .star-label {
+            color: #ffca28;
+        }
+
+        .star-label i {
+            transition: color 0.3s;
+        }
+
+    .form-control {
+        border-radius: 10px;
+    }
+
+    .btn {
+        border-radius: 10px;
+        font-weight: 600;
+        padding: 8px 15px;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border: 1px solid #6c757d;
+    }
+
+    .btn-danger {
+        background-color: #ff4d4d;
+        border: 1px solid #ff4d4d;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+
+    .btn-danger:hover {
+        background-color: #e63946;
+    }
+</style>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
