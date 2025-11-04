@@ -126,7 +126,7 @@
 
                         <!-- Mục “Tìm kiếm” chỉ hiện trên mobile -->
                         <li class="nav-item mobile-search-item">
-                            <a class="nav-link text-danger fw-semibold" asp-controller="Search" asp-action="Index">
+                            <a class="nav-link text-danger fw-semibold" asp-controller="Service" asp-action="Index">
                                 Tìm kiếm
                             </a>
                         </li>
@@ -140,8 +140,9 @@
                     </ul>
 
                     <!-- Thanh tìm kiếm (chỉ desktop) -->
-                    <form class="d-flex search-box" asp-controller="Search" asp-action="Index" method="get">
-                        <input class="form-control me-2" type="search" name="q" placeholder="Tìm kiếm..." />
+                    <form class="d-flex search-box" asp-controller="Service" asp-action="Index" method="get">
+                        <input class="form-control me-2" type="search" name="keyword"
+                               placeholder="Tìm kiếm dịch vụ..." value="@Context.Request.Query["keyword"]" />
                         <button type="submit"><i class="bi bi-search"></i></button>
                     </form>
 
@@ -242,5 +243,17 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        document.querySelectorAll('form[action*="Service"]').forEach(form => {
+            form.addEventListener('submit', e => {
+                const input = form.querySelector('input[name="keyword"]');
+                if (!input.value.trim()) {
+                    e.preventDefault();
+                    alert("Vui lòng nhập từ khóa tìm kiếm!");
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>

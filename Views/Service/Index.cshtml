@@ -1,0 +1,39 @@
+﻿@model IEnumerable<BTL.Models.Service>
+
+<div class="container mt-4">
+    <h3>
+        Kết quả tìm kiếm cho:
+        <strong>@(string.IsNullOrEmpty(ViewBag.Keyword) ? "Tất cả dịch vụ" : ViewBag.Keyword)</strong>
+    </h3>
+    <hr />
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted mt-3">Không tìm thấy dịch vụ nào phù hợp.</p>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">@item.ItemName</h5>
+                            <p class="card-text">@item.Description</p>
+                            <p><i class="bi bi-geo-alt"></i> @item.Address</p>
+                            @if (item.Category != null)
+                            {
+                                <p><span class="badge bg-secondary">@item.Category.CategoryName</span></p>
+                            }
+                            <p class="text-muted small">
+                                Đăng bởi: @(item.User != null ? item.User.FullName : "Người dùng")<br />
+                                Ngày: @item.CreateAt.ToString("dd/MM/yyyy")
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
