@@ -87,6 +87,9 @@ namespace BTL.Controllers
 
             return View(vm);
         }
-
+        public IActionResult Create()
+        {
+            return View();
+        }
     }
 }

@@ -18,6 +18,7 @@ namespace BTL.Models
         public string Status { get; set; } = "Chờ duyệt";
 
         // Navigation
+        [ForeignKey("UserID")]
         public User? User { get; set; }
         //public Service? Service { get; set; }
         public ICollection<RvImage>? RvImages { get; set; }
