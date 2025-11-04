@@ -30,7 +30,7 @@ public class HomeController : Controller
                 ReviewID = r.ReviewID,
                 UserName = r.User.FullName,
 
-                // ✅ AvatarUrl (nếu null → avatar default)
+                // AvatarUrl (nếu null → avatar default)
                 AvatarUrl = string.IsNullOrEmpty(r.User.AvatarUrl)
                                 ? "/uploads/avatars/default.png"
                                 : r.User.AvatarUrl,
@@ -40,7 +40,7 @@ public class HomeController : Controller
                                 ? r.Content.Substring(0, 80) + "..."
                                 : r.Content,
 
-                // ✅ Ảnh review (nếu không có → ảnh mặc định)
+                // Ảnh review (nếu không có → ảnh mặc định)
                 ImageUrl = r.RvImages.FirstOrDefault() != null
                                 ? r.RvImages.First().ImageUrl
                                 : "/uploads/reviews/default.png",
@@ -48,10 +48,10 @@ public class HomeController : Controller
                 Rating = r.Rating,
                 CreateAt = r.CreateAt,
 
-                // ✅ Tổng số Like
+                // Tổng số Like
                 LikeCount = _context.Likes.Count(l => l.ReviewID == r.ReviewID),
 
-                // ✅ Người dùng hiện tại đã like chưa?
+                //Người dùng hiện tại đã like chưa?
                 IsLiked = _context.Likes.Any(l => l.ReviewID == r.ReviewID && l.UserID == currentUserId)
             })
             .ToList();

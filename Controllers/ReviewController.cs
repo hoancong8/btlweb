@@ -14,7 +14,7 @@ namespace BTL.Controllers
             _context = context;
         }
 
-        // ✅ Toggle Like (Bấm là Like, bấm lại là Bỏ Like)
+        // Toggle Like (Bấm là Like, bấm lại là Bỏ Like)
         [HttpPost]
         public IActionResult ToggleLike(int reviewId, int userId)
         {

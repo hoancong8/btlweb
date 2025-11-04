@@ -11,8 +11,8 @@
         public int Rating { get; set; }
         public DateTime CreateAt { get; set; }
 
-        public int LikeCount { get; set; }   // ✅ tổng like
-        public bool IsLiked { get; set; }    // ✅ user đã like chưa
+        public int LikeCount { get; set; }   // tổng like
+        public bool IsLiked { get; set; }    // user đã like chưa
      
     }
    
