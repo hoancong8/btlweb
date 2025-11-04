@@ -1,7 +1,7 @@
 using System;
 namespace BTL.Models
 {
-    ppublic class Report
+    public class Report
     {
         public int ReportID { get; set; }
         public int UserID { get; set; }

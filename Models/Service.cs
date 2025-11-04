@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 namespace BTL.Models
 {
     public class Service
     {
+        [Key]
         public int ItemID { get; set; }
         public string ItemName { get; set; }
         public string? Description { get; set; }
@@ -15,6 +17,6 @@ namespace BTL.Models
         // Navigation
         public Category? Category { get; set; }
         public User? User { get; set; }
-        public ICollection<Review>? Reviews { get; set; }
+        //public ICollection<Review>? Reviews { get; set; }
     }
 }

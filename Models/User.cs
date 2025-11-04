@@ -1,25 +1,35 @@
 using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace BTL.Models
 {
+    [Table("tblUser")]
     public class User
     {
-         public int UserID { get; set; }
-        public string UserName { get; set; }
-        public string? FullName { get; set; }
-        public string Email { get; set; }
-        public string PasswordHash { get; set; }
-        public string? AvatarUrl { get; set; }
-        public bool Role { get; set; } = true; // true=User, false=Admin
-        public DateTime CreateAt { get; set; } = DateTime.Now;
-        public bool IsActive { get; set; } = true;
+        [Key]
+        public int UserID { get; set; }
 
-        // Navigation
-        public ICollection<Service>? Services { get; set; }
-        public ICollection<Review>? Reviews { get; set; }
-        public ICollection<Comment>? Comments { get; set; }
-        public ICollection<Like>? Likes { get; set; }
-        public ICollection<Report>? Reports { get; set; }
-        public ICollection<Noti>? Notis { get; set; }
+        [Required(ErrorMessage = "Tên ðãng nh?p là bat buoc")]
+        [StringLength(50, MinimumLength = 6, ErrorMessage = "Tên ðãng nhap phai có ít nhat 6 ki tu")]
+        public string UserName { get; set; }
+
+        [StringLength(100)]
+        public string FullName { get; set; }
+
+        [Required(ErrorMessage = "Email là bat buoc")]
+        [EmailAddress(ErrorMessage = "Email không hop le")]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "M?t kh?u là bat buoc")]
+        public string PasswordHash { get; set; }
+
+        public string? AvatarUrl { get; set; }
+
+        public bool Role { get; set; } = true;
+
+        public DateTime CreateAt { get; set; } = DateTime.Now;
+
+        public bool IsActive { get; set; } = true;
     }
 }

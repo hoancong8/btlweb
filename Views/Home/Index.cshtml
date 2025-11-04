@@ -1,8 +1,125 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<BTL.Models.ViewModels.ReviewCardVM>
+@{
+    ViewData["Title"] = "Trang chủ";
+    Layout = "_Layout";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- HERO SECTION -->
+<div class="hero-section position-relative rounded-4 overflow-hidden mb-5">
+    <img src="~/uploads/reviews/hohoankiem.jpg" class="w-100 hero-bg" alt="Hồ Hoàn Kiếm" />
+
+    <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center text-white px-5"
+         style="background: rgba(0,0,0,0.4);">
+
+        <h1 class="fw-bold display-6 mb-3">
+            HaNoiShare – Mạng xã hội chia sẻ review<br />sản phẩm & dịch vụ thực tế.
+        </h1>
+
+        <h5 class="fw-semibold mb-4">Khám phá theo danh mục</h5>
+
+        <div class="d-flex flex-wrap gap-3">
+            @foreach (var cat in new[] {
+                        new {Icon="CellPhone.svg", Name="Ẩm thực"},
+                        new {Icon="Computer.svg", Name="Làm đẹp"},
+                        new {Icon="SmartWatch.svg", Name="Spa"},
+                        new {Icon="Repair.svg", Name="Sửa chữa"},
+                        new {Icon="Mallbag.svg", Name="Mua sắm"},
+                        new {Icon="Book.svg", Name="Học tập"} })
+            {
+                <div class="category-card text-center bg-white text-dark rounded-3 p-3 shadow-sm">
+                    <img src="~/uploads/icons/@cat.Icon" width="40" height="40" alt="@cat.Name" />
+                    <div class="mt-2 fw-semibold">@cat.Name</div>
+                </div>
+            }
+        </div>
+    </div>
 </div>
+
+<!-- FEATURED REVIEWS -->
+<div class="container mb-5">
+    <h4 class="fw-bold mb-4">Đánh giá nổi bật</h4>
+    <div class="row g-4">
+        @foreach (var item in Model.Take(4))
+        {
+            <div class="col-12 col-md-6 col-lg-4">
+                @Html.Partial("~/Views/Product/_ReviewCard.cshtml", item)
+            </div>
+        }
+
+    </div>
+</div>
+
+<!-- EXPLORE REVIEWS -->
+<div class="container mb-5">
+    <h4 class="fw-bold mb-4">Khám phá thêm review</h4>
+    <div class="row g-4">
+        @foreach (var item in Model.Skip(4))
+        {
+            <div class="col-12 col-md-6 col-lg-4">
+                @Html.Partial("~/Views/Product/_ReviewCard.cshtml", item)
+            </div>
+        }
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            $(".like-btn").on("click", function () {
+
+                var btn = $(this);
+                var userId = btn.data("user");
+
+                // ✅ Nếu chưa login → báo lỗi
+                if (!userId || userId === 0) {
+                    alert("Bạn cần đăng nhập để thích bài viết.");
+                    window.location.href = "/User/Login";
+                    return;
+                }
+
+                var reviewId = btn.data("review");
+
+                $.post("/Review/ToggleLike",
+                    { reviewId: reviewId, userId: userId },
+                    function (res) {
+
+                        if (res.success) {
+
+                            // cập nhật số like
+                            btn.find(".like-count").text(res.likeCount);
+
+                            // đổi màu
+                            btn.toggleClass("btn-primary text-white");
+                            btn.toggleClass("btn-light");
+                        }
+                    }
+                );
+            });
+
+        });
+    </script>
+}
+
+<style>
+    .hero-section {
+        height: 420px;
+        position: relative;
+    }
+
+    .hero-bg {
+        object-fit: cover;
+        height: 100%;
+        filter: brightness(0.85);
+    }
+
+    .category-card {
+        width: 110px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+</style>

@@ -1,0 +1,73 @@
+﻿@{
+    ViewData["Title"] = "Đăng nhập";
+}
+
+<div class="container mt-5 d-flex justify-content-center" style="margin-bottom:50px;margin-top:50px">
+    <div class="login-box bg-white p-4 rounded-4 shadow-lg" style="width: 100%; max-width: 400px;">
+        <h3 class="text-center mb-4 fw-bold text-dark">Đăng nhập</h3>
+
+        <form asp-action="Login" method="post">
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Tên đăng nhập</label>
+                <input type="text" name="username" class="form-control" placeholder="Nhập tên đăng nhập..." required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Mật khẩu</label>
+                <input type="password" name="password" class="form-control" placeholder="Nhập mật khẩu..." required />
+            </div>
+
+            <button type="submit" class="btn btn-danger w-100 py-2">Đăng nhập</button>
+        </form>
+
+        <div class="text-center mt-3">
+            <a asp-controller="User" asp-action="Register" class="text-decoration-none text-danger fw-semibold">
+                Chưa có tài khoản? Đăng ký
+            </a>
+        </div>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="text-danger mt-3 small">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <div>@error.ErrorMessage</div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .login-box {
+        background: #fff;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        border-radius: 15px;
+        padding: 2rem;
+        transition: all 0.3s ease;
+    }
+
+        .login-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 10px 12px;
+    }
+
+    .btn-danger {
+        border-radius: 10px;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+        .btn-danger:hover {
+            background-color: #e63946;
+        }
+</style>

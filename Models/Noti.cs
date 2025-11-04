@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
 namespace BTL.Models
 {
-    public class User
+    public class Noti
     {
         public int NotiID { get; set; }
         public int UserID { get; set; }
@@ -10,7 +8,7 @@ namespace BTL.Models
         public bool IsRead { get; set; } = false;
         public DateTime CreateAt { get; set; } = DateTime.Now;
 
-        // Navigation
-        public User? User { get; set; }
+        // Navigation (n?u b?n ð?nh liên k?t ð?n 1 Noti khác)
+        public Noti? ParentNoti { get; set; }   // ? ð?i tên
     }
 }

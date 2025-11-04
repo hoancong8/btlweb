@@ -1,0 +1,60 @@
+﻿@model BTL.Models.ViewModels.ReviewCardVM
+
+<div class="review-card p-3 rounded shadow-sm bg-white" onclick="window.location='/Review/Detail/@Model.ReviewID'"
+     style="cursor: pointer;">
+
+    <!-- User info -->
+    <div class="d-flex align-items-center mb-3">
+        <img src="@Model.AvatarUrl" class="rounded-circle" width="45" height="45" />
+        <div class="ms-2">
+            <div class="fw-semibold">@Model.UserName</div>
+            <small class="text-muted">@Model.CreateAt.ToString("dd/MM/yyyy")</small>
+        </div>
+    </div>
+
+    <!-- Image -->
+    <img src="@Model.ImageUrl" class="img-fluid rounded mb-3" />
+
+    <!-- Title -->
+    <h6 class="fw-bold mb-1">@Model.Title</h6>
+
+    <!-- Rating -->
+    <div class="rating mb-2">
+        @for (int i = 1; i <= 5; i++)
+        {
+            if (i <= Model.Rating)
+            {
+                <i class="bi bi-star-fill text-warning"></i>
+            }
+            else
+            {
+                <i class="bi bi-star text-warning"></i>
+            }
+        }
+        <small class="text-muted ms-1">(@Model.Rating)</small>
+    </div>
+
+    <!-- Short content -->
+    <p class="text-muted small">@Model.ShortContent</p>
+
+    <!-- Action buttons -->
+    <div class="d-flex justify-content-between mt-3">
+
+        <button class="btn btn-sm d-flex align-items-center gap-1 like-btn
+                       @(Model.IsLiked ? "btn-primary text-white" : "btn-light")"
+                data-review="@Model.ReviewID"
+                data-user="@Context.Session.GetInt32("UserID")">
+            <i class="bi bi-hand-thumbs-up"></i>
+            <span>Thích</span>
+            (<span class="like-count">@Model.LikeCount</span>)
+        </button>
+
+        <button class="btn btn-light btn-sm">
+            <i class="bi bi-chat"></i> Bình luận
+        </button>
+
+        <button class="btn btn-light btn-sm">
+            <i class="bi bi-share"></i> Chia sẻ
+        </button>
+    </div>
+</div>

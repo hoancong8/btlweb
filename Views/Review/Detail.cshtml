@@ -1,0 +1,177 @@
+﻿@model BTL.Models.ViewModels.ReviewDetailVM
+
+<div class="post-modal">
+    <div class="post-container rounded shadow">
+
+        <!-- CLOSE BUTTON -->
+        <button class="close-btn" onclick="window.history.back()">
+            <i class="bi bi-x-lg"></i>
+        </button>
+
+        <div class="row g-0">
+
+            <!-- LEFT: IMAGE -->
+            <div class="col-md-7 post-image-box">
+                <img src="@Model.MainImage" class="post-main-img" />
+            </div>
+
+            <!-- RIGHT: CONTENT -->
+            <div class="col-md-5 post-content p-3">
+
+                <!-- USER -->
+                <div class="d-flex align-items-center mb-3">
+                    <img src="@Model.AvatarUrl" width="45" class="rounded-circle" />
+                    <div class="ms-2">
+                        <div class="fw-semibold">@Model.UserName</div>
+                        <small class="text-muted">@Model.CreateAt.ToString("dd/MM/yyyy")</small>
+                    </div>
+                </div>
+
+                <!-- TITLE -->
+                <h5 class="fw-bold">@Model.Title</h5>
+
+                <!-- CONTENT -->
+                <p class="text-muted">@Model.Content</p>
+
+                <!-- ACTION BUTTONS -->
+                <div class="d-flex justify-content-around border-top border-bottom py-2 mt-3">
+
+                    <button class="btn like-btn @(Model.IsLiked ? "text-primary" : "")"
+                            data-user="@Model.UserID"
+                            data-review="@Model.ReviewID">
+                        <i class="bi bi-hand-thumbs-up"></i> Thích (<span class="like-count">@Model.LikeCount</span>)
+                    </button>
+
+                    <button class="btn btn-comment">
+                        <i class="bi bi-chat"></i> Bình luận
+                    </button>
+
+                    <button class="btn btn-share">
+                        <i class="bi bi-share"></i> Chia sẻ
+                    </button>
+
+                </div>
+
+                <!-- COMMENT LIST -->
+                <div class="comment-list mt-3" style="max-height:350px; overflow-y:auto;">
+                    @foreach (var c in Model.Comments)
+                    {
+                        <div class="d-flex mb-2">
+                            <img src="@c.Avatar" width="38" class="rounded-circle" />
+                            <div class="ms-2">
+                                <b>@c.UserName</b> <br />
+                                <span>@c.Text</span> <br />
+                                <small class="text-muted">@c.Time.ToString("HH:mm dd/MM")</small>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- COMMENT INPUT -->
+                <div class="d-flex mt-3">
+                    <img src="@Model.CurrentUserAvatar" width="38" class="rounded-circle" />
+                    <input id="comment-input" class="form-control ms-2" placeholder="Viết bình luận..." />
+                    <button class="btn btn-primary ms-2" id="btn-send">Gửi</button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            // ✅ Toggle Like
+            $(".like-btn").click(function () {
+                var btn = $(this);
+                var reviewId = btn.data("review");
+                var userId = btn.data("user");
+
+                if (!userId || userId == 0) {
+                    alert("Bạn cần đăng nhập để thích.");
+                    return;
+                }
+
+                $.post("/Review/ToggleLike",
+                    { reviewId: reviewId, userId: userId },
+                    function (res) {
+                        if (res.success) {
+                            btn.toggleClass("text-primary");
+                            btn.find(".like-count").text(res.likeCount);
+                        }
+                    });
+            });
+
+            // ✅ Add Comment
+            $("#btn-send").click(function () {
+                var text = $("#comment-input").val();
+                if (text.trim() === "") return;
+
+                $.post("/Review/AddComment",
+                    { reviewId: @Model.ReviewID, content: text },
+                    function (res) {
+                        if (res.success) {
+                            $(".comment-list").prepend(`
+                                <div class="d-flex mb-2">
+                                    <img src="${res.avatar}" width="38" class="rounded-circle" />
+                                    <div class="ms-2">
+                                        <b>${res.userName}</b><br/>
+                                        <span>${res.text}</span><br/>
+                                        <small class="text-muted">${res.time}</small>
+                                    </div>
+                                </div>
+                            `);
+
+                            $("#comment-input").val("");
+                        }
+                    });
+            });
+        });
+    </script>
+}
+
+<style>
+    .post-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.65);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 99999;
+    }
+
+    .post-container {
+        width: 90%;
+        max-width: 1100px;
+        background: white;
+        position: relative;
+    }
+
+    .post-image-box {
+        background: #000;
+    }
+
+    .post-main-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        border: none;
+        background: white;
+        border-radius: 50%;
+        padding: 5px 10px;
+        z-index: 1000;
+    }
+</style>
