@@ -32,15 +32,20 @@ namespace BTL.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ReviewViewModel model, IFormFile? imageFile)
         {
+            if (HttpContext.Session.GetInt32("UserID") == null)
+            {
+                return RedirectToAction("Login", "User"); // Chuyển hướng đến trang đăng nhập
+            }
             if (true)
             {
                 Console.WriteLine($"SelectedServiceID: {model.SelectedServiceID}");
                 try
                 {
+                    int userId = (int)HttpContext.Session.GetInt32("UserID");
                     // Tạo đối tượng Review mới
                     var review = new Review
                     {
-                        UserID = 3, // ID của người dùng đăng nhập (cần điều chỉnh theo cơ chế đăng nhập của bạn)
+                        UserID = userId, // ID của người dùng đăng nhập (cần điều chỉnh theo cơ chế đăng nhập của bạn)
                         ItemID = model.SelectedServiceID, // ID dịch vụ người dùng chọn
                         Title = model.Title,
                         Content = model.Content,
