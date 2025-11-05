@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,18 +10,18 @@ namespace BTL.Models
         [Key]
         public int UserID { get; set; }
 
-        [Required(ErrorMessage = "T�n ��ng nh?p l� bat buoc")]
-        [StringLength(50, MinimumLength = 6, ErrorMessage = "T�n ��ng nhap phai c� �t nhat 6 ki tu")]
+        [Required(ErrorMessage = "Tên ðãng nhập là bắt buộc")]
+        [StringLength(50, MinimumLength = 6, ErrorMessage = "Tên ðãng nhập phải có ít nhất 6 kí tự")]
         public string UserName { get; set; }
 
         [StringLength(100)]
         public string FullName { get; set; }
 
-        [Required(ErrorMessage = "Email l� bat buoc")]
-        [EmailAddress(ErrorMessage = "Email kh�ng hop le")]
+        [Required(ErrorMessage = "Email là bắt buộc")]
+        [EmailAddress(ErrorMessage = "Email không hop le")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "M?t kh?u l� bat buoc")]
+        [Required(ErrorMessage = "M?t khẩu là bắt buộc")]
         public string PasswordHash { get; set; }
 
         public string? AvatarUrl { get; set; }
