@@ -31,7 +31,7 @@ namespace BTL.Controllers
             return View(reviews);
         }
 
-        public IActionResult Contact()
+        public IActionResult About()
         {
             return View();
         }
