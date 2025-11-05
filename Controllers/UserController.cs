@@ -81,30 +81,47 @@ namespace BTL.Controllers
                 return View();
             }
 
-            // Mã hóa mật khẩu người dùng nhập vào để so sánh
+            // Hash mật khẩu nhập vào
             string hashedPassword = HashPassword(password);
 
-            // Kiểm tra trong DB
-            var user = _context.Users.FirstOrDefault(u => u.UserName == username && u.PasswordHash == hashedPassword);
+            // Tìm user trong DB
+            var user = _context.Users
+                .FirstOrDefault(u => u.UserName == username && u.PasswordHash == hashedPassword);
 
-            if (user != null)
-            {
-                // Lưu thông tin người dùng vào Session (hoặc Claims)
-                HttpContext.Session.SetInt32("UserID", user.UserID);
-                HttpContext.Session.SetString("UserName", user.UserName);
-                TempData["Success"] = $"Xin chào, {user.UserName}!";
-                return RedirectToAction("Index", "Home");
-            }
-            else
+            if (user == null)
             {
                 ModelState.AddModelError(string.Empty, "Tên đăng nhập hoặc mật khẩu không đúng.");
                 return View();
-            }   
+            }
+
+            // ✅ Lưu vào session
+            HttpContext.Session.SetInt32("UserID", user.UserID);
+            HttpContext.Session.SetString("UserName", user.UserName);
+            HttpContext.Session.SetString("Role", user.Role ? "User" : "Admin");
+
+            // ✅ Kiểm tra Role
+            if (user.Role == false)  // false = admin
+            {
+                return RedirectToAction("Index", "ServiceAdmin", new { area = "Admin" });
+            }
+
+            // ✅ User bình thường
+            return RedirectToAction("Index", "Home");
         }
+
         [HttpGet]
         public IActionResult Login()
         {
             return View();
+        }
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            // Xóa session
+            HttpContext.Session.Clear();
+
+            // Chuyển về trang chính
+            return RedirectToAction("Index", "Home");
         }
     }
 }

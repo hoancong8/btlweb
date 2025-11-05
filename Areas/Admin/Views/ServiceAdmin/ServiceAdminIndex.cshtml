@@ -1,0 +1,63 @@
+@model IEnumerable<BTL.Models.Service>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using BTL.Models
+@{
+    ViewData["Title"] = "Quản lý Dịch vụ";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-success">Quản lý Dịch vụ</h2>
+        <button class="btn btn-success" id="btnAddService">
+            <i class="bi bi-plus-circle"></i> Thêm Dịch vụ
+        </button>
+    </div>
+
+    <table class="table table-bordered table-hover align-middle shadow-sm">
+        <thead class="table-success text-center">
+            <tr>
+                <th>Ảnh</th>
+                <th>Tên dịch vụ</th>
+                <th>Danh mục</th>
+                <th>Địa chỉ</th>
+                <th>Ngày tạo</th>
+                <th class="text-center">Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in Model)
+            {
+                <tr>
+                    <td>
+                        <img src="@s.ImageUrl"
+                            asp-append-version="true"
+                            style="width:70px;height:70px;object-fit:cover;border-radius:8px;" />
+                    </td>
+                    <td>@s.ItemName</td>
+                    <td>@s.Category?.CategoryName</td>
+                    <td>@s.Address</td>
+                    <td>@s.CreateAt.ToString("dd/MM/yyyy")</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-primary btn-edit" data-id="@s.ItemID">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger btn-delete" data-id="@s.ItemID">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content"></div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/js/service-admin.js" asp-append-version="true"></script>
+}
