@@ -144,10 +144,10 @@
                             <a class="nav-link" asp-controller="Home" asp-action="Index">Trang chủ</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Contact">Liên hệ</a>
+                            <a class="nav-link" asp-controller="Contact" asp-action="Index">Liên hệ</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="About">Giới thiệu</a>
+                            <a class="nav-link" asp-controller="About" asp-action="Index">Giới thiệu</a>
                         </li>
 
                         <!-- Mục “Tìm kiếm” chỉ hiện trên mobile -->
@@ -358,7 +358,7 @@
             const notiList = document.getElementById("notiList");
             const notiCount = document.getElementById("notiCount");
 
-            // Khi click chuông, load danh sách thông báo
+            // Load danh sách thông báo
             document.getElementById("notiDropdown").addEventListener("click", function () {
                 fetch("/Noti/GetLatest")
                     .then(res => res.json())

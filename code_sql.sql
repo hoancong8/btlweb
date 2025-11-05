@@ -115,6 +115,16 @@ CREATE TABLE tblNoti (
 );
 GO
 
+-- 10 BẢNG LIÊN HỆ (tblContact)
+CREATE TABLE tblContact (
+    ContactID INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL,
+    Email NVARCHAR(100) NOT NULL,
+    Subject NVARCHAR(150) NULL,
+    Message NVARCHAR(MAX) NOT NULL,
+    CreateAt DATETIME DEFAULT GETDATE()
+);
+GO
 
 INSERT INTO tblCategory (CategoryName, Description)
 VALUES
