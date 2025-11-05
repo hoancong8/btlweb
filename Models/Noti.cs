@@ -1,5 +1,8 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace BTL.Models
 {
+    [Table("tblNoti")]
     public class Noti
     {
         public int NotiID { get; set; }
