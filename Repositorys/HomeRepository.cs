@@ -27,7 +27,7 @@ namespace BTL.Repositories
                     ReviewID = r.ReviewID,
                     UserID = r.UserID,  // Thêm UserID vào đối tượng ReviewCardVM
                     UserName = r.User.FullName,
-                    VerifyKey = StringHelper.DecodeBase64(r.VerifyKey),
+                    //VerifyKey = StringHelper.DecodeBase64(r.VerifyKey),
                     AvatarUrl = string.IsNullOrEmpty(r.User.AvatarUrl)
                                     ? "/uploads/avatars/default.png"
                                     : r.User.AvatarUrl,

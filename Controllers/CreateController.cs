@@ -47,7 +47,7 @@ public class CreateController : Controller
                 Title = model.Title,
                 Content = model.Content,
                 Rating = model.Rating,
-                VerifyKey = StringHelper.EncodeBase64(model.VerifyKey), // Mã hóa VerifyKey trước khi lưu
+                //VerifyKey = StringHelper.EncodeBase64(model.VerifyKey), // Mã hóa VerifyKey trước khi lưu
                 CreateAt = DateTime.Now,
                 Status = "Đã duyệt"
             };
