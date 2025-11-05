@@ -16,7 +16,10 @@ namespace BTL.Models
         public int Rating { get; set; }
         public DateTime CreateAt { get; set; } = DateTime.Now;
         public string Status { get; set; } = "Chờ duyệt";
-
+        [Required(ErrorMessage = "Vui lòng nhập mã VerifyKey.")]
+        [StringLength(10, MinimumLength = 10, ErrorMessage = "VerifyKey phải có đúng 10 ký tự.")]
+        [RegularExpression(@"^[0-9][A-Za-z0-9]{9}$", ErrorMessage = "VerifyKey phải bắt đầu bằng số và có 10 ký tự.")]
+        public string VerifyKey { get; set; }
         // Navigation
         [ForeignKey("UserID")]
         public User? User { get; set; }

@@ -1,127 +1,115 @@
 ﻿using BTL.Models;
+using BTL.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BTL.Controllers
 {
     public class UserController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly UserRepository _repo;
 
-        public UserController(AppDbContext context)
+        public UserController(UserRepository repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
-        // GET: User/Register
+        // ✅ Register GET
         public IActionResult Register()
         {
             return View();
         }
 
-        // POST: User/Register
+        // ✅ Register POST
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(User user)
         {
-            if (ModelState.IsValid)
-            {
-                // Kiểm tra trùng username hoặc email
-                if (_context.Users.Any(u => u.UserName == user.UserName))
-                {
-                    ModelState.AddModelError("UserName", "Tên đăng nhập đã tồn tại");
-                    return View(user);
-                }
-
-                if (_context.Users.Any(u => u.Email == user.Email))
-                {
-                    ModelState.AddModelError("Email", "Email đã được sử dụng");
-                    return View(user);
-                }
-
-                // Mã hóa mật khẩu
-                user.PasswordHash = HashPassword(user.PasswordHash);
-
-                // Lưu vào DB
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
-
-                TempData["Success"] = "Đăng ký thành công!";
-                return RedirectToAction("Login", "User");
-            }
             if (!ModelState.IsValid)
+                return View(user);
+
+            // Kiểm tra username tồn tại
+            if (await _repo.ExistsUserNameAsync(user.UserName))
             {
-                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    Console.WriteLine(error.ErrorMessage); // Xem lỗi trên console
-                }
+                ModelState.AddModelError("UserName", "Tên đăng nhập đã tồn tại");
+                return View(user);
             }
-            return View(user);
+
+            // Kiểm tra email tồn tại
+            if (await _repo.ExistsEmailAsync(user.Email))
+            {
+                ModelState.AddModelError("Email", "Email đã được sử dụng");
+                return View(user);
+            }
+
+            // Hash mật khẩu
+            user.PasswordHash = _repo.HashPassword(user.PasswordHash);
+
+            // Lưu user
+            await _repo.AddUserAsync(user);
+
+            TempData["Success"] = "Đăng ký thành công!";
+            return RedirectToAction("Login", "User");
         }
 
-        private string HashPassword(string password)
-        {
-            using (var sha256 = SHA256.Create())
-            {
-                var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return BitConverter.ToString(bytes).Replace("-", "").ToLower();
-            }
-        }
-
-        // (Tuỳ chọn) Trang đăng nhập
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Login(string username, string password)
-        {
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
-            {
-                ModelState.AddModelError(string.Empty, "Vui lòng nhập đầy đủ thông tin.");
-                return View();
-            }
-
-            // Hash mật khẩu nhập vào
-            string hashedPassword = HashPassword(password);
-
-            // Tìm user trong DB
-            var user = _context.Users
-                .FirstOrDefault(u => u.UserName == username && u.PasswordHash == hashedPassword);
-
-            if (user == null)
-            {
-                ModelState.AddModelError(string.Empty, "Tên đăng nhập hoặc mật khẩu không đúng.");
-                return View();
-            }
-
-            // ✅ Lưu vào session
-            HttpContext.Session.SetInt32("UserID", user.UserID);
-            HttpContext.Session.SetString("UserName", user.UserName);
-            HttpContext.Session.SetString("Role", user.Role ? "User" : "Admin");
-
-            // ✅ Kiểm tra Role
-            if (user.Role == false)  // false = admin
-            {
-                return RedirectToAction("Index", "ServiceAdmin", new { area = "Admin" });
-            }
-
-            // ✅ User bình thường
-            return RedirectToAction("Index", "Home");
-        }
-
+        // ✅ Login GET
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
+
+        // ✅ Login POST
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(string username, string password)
+        {
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            {
+                ModelState.AddModelError("", "Vui lòng nhập đầy đủ thông tin.");
+                return View();
+            }
+
+            var user = await _repo.LoginAsync(username, password);
+
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng.");
+                return View();
+            }
+
+            // ✅ Lưu Session
+            HttpContext.Session.SetInt32("UserID", user.UserID);
+            HttpContext.Session.SetString("UserName", user.UserName);
+            HttpContext.Session.SetString("Role", user.Role ? "User" : "Admin");
+
+            // ✅ Kiểm tra quyền
+            if (user.Role == false) // false = admin
+            {
+                return RedirectToAction("Index", "ServiceAdmin", new { area = "Admin" });
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        // ✅ Logout
         [HttpGet]
         public IActionResult Logout()
         {
-            // Xóa session
             HttpContext.Session.Clear();
-
-            // Chuyển về trang chính
             return RedirectToAction("Index", "Home");
+        }
+
+        // ✅ Profile User hiện tại
+        public async Task<IActionResult> Profile()
+        {
+            int userId = HttpContext.Session.GetInt32("UserID") ?? 0;
+
+            var user = await _repo.GetUserByIdAsync(userId);
+
+            if (user == null)
+                return RedirectToAction("Login");
+
+            return View(user);
         }
     }
 }

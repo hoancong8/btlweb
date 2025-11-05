@@ -11,7 +11,7 @@
         public string ImageUrl { get; set; }
         public int Rating { get; set; }
         public DateTime CreateAt { get; set; }
-
+        public string VerifyKey { get; set; }
         public int LikeCount { get; set; }   // tổng like
         public bool IsLiked { get; set; }    // user đã like chưa
      

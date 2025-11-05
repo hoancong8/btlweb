@@ -11,6 +11,31 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
 
     <style>
+        /* Ẩn menu mặc định */
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            min-width: 160px;
+            border-radius: 5px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+            /* Khi nhấn vào người dùng, menu sẽ hiển thị */
+            .dropdown-menu.show {
+                display: block;
+            }
+
+        /* Style cho các mục trong menu */
+        .dropdown-item {
+            padding: 10px;
+            color: #333;
+        }
+
+            .dropdown-item:hover {
+                background-color: #f1f1f1;
+            }
+
         .footer {
             
             background-color: #000;
@@ -174,10 +199,20 @@
                     @if (!string.IsNullOrEmpty(userName))
                     {
                         <!-- Nếu đã đăng nhập -->
-                        <span class="icon-btn ms-3 text-white">
-                            <i class="bi bi-person text-white"></i>
-                            Xin chào, @userName!
-                        </span>
+                    <!-- Biểu tượng người dùng và menu dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link position-relative" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person text-white"></i> <!-- Biểu tượng người dùng -->
+                            <span class="ms-2">Xin chào, @userName!</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+                            <li>
+                                <a class="dropdown-item" asp-controller="Profile" asp-action="Index">Trang cá nhân</a>
+                            </li>
+                            <li><a class="dropdown-item" href="/User/Logout">Đăng xuất</a></li>
+                        </ul>
+                    </li>
+
                     }
                     else
                     {
@@ -303,6 +338,22 @@
     </script>
 
     <script>
+                $(document).ready(function () {
+            // Mở/đóng menu khi nhấn vào biểu tượng người dùng
+            $("#userDropdown").on("click", function (e) {
+                e.preventDefault();  // Ngăn không cho liên kết tải lại trang
+                var menu = $(this).next(".dropdown-menu");
+                menu.toggleClass("show");  // Thêm hoặc xóa class "show" để hiện/ẩn menu
+            });
+
+            // Đóng menu khi nhấn ở nơi khác
+            $(document).click(function (e) {
+                if (!$(e.target).closest('#userDropdown').length) {
+                    $(".dropdown-menu").removeClass("show");
+                }
+            });
+        });
+
         document.addEventListener("DOMContentLoaded", function () {
             const notiList = document.getElementById("notiList");
             const notiCount = document.getElementById("notiCount");
