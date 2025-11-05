@@ -1,5 +1,18 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Giới thiệu";
 }
+
+<div class="container py-5">
+    <h2 class="text-center mb-4">@ViewBag.Title</h2>
+
+    <div class="card shadow p-4 mb-4">
+        <p class="text-justify">
+            @ViewBag.Description
+        </p>
+    </div>
+
+    <div class="card p-3 border-0 text-center">
+        <h5>👥 @ViewBag.Team</h5>
+        <p>📧 Liên hệ: <a href="mailto:@ViewBag.ContactEmail">@ViewBag.ContactEmail</a></p>
+    </div>
+</div>
