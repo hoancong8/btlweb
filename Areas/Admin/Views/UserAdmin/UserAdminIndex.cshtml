@@ -1,0 +1,97 @@
+﻿@model IEnumerable<BTL.Models.User>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Quản lý User";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-success">Quản lý User</h2>
+        <button class="btn btn-success" id="btnAddUser">
+            <i class="bi bi-plus-circle"></i> Thêm User
+        </button>
+    </div>
+
+    <table class="table table-bordered table-hover align-middle shadow-sm">
+        <thead class="table-success text-center">
+            <tr>
+                <th>Avatar</th>
+                <th>UserName</th>
+                <th>FullName</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Trạng thái</th>
+                <th class="text-center">Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var u in Model)
+            {
+                <tr>
+                    <td>
+                        <img src="@u.AvatarUrl" style="width:50px;height:50px;object-fit:cover;border-radius:50%;" />
+                    </td>
+                    <td>@u.UserName</td>
+                    <td>@u.FullName</td>
+                    <td>@u.Email</td>
+                    <td>@(u.Role ? "User" : "Admin")</td>
+                    <td>
+                        <div class="form-check d-flex align-items-center justify-content-center">
+                            <input type="checkbox" class="form-check-input toggle-active" id="activeCheck_@u.UserID" data-id="@u.UserID" @(u.IsActive ? "checked" : "") />
+                            <label class="ms-2 mb-0" for="activeCheck_@u.UserID">
+                                @(u.IsActive ? "Active" : "Inactive")
+                            </label>
+                        </div>
+                    </td>
+
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-primary btn-edit" data-id="@u.UserID">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger btn-delete" data-id="@u.UserID">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/user-admin.js" asp-append-version="true"></script>
+    <script>
+                $(document).ready(function(){
+            // Toggle Active/Inactive
+            $('.toggle-active').change(function(){
+                var userId = $(this).data('id');
+                var isActive = $(this).is(':checked');
+
+                // Cập nhật chữ trên label ngay
+                var label = $('label[for="activeCheck_' + userId + '"]');
+                label.text(isActive ? "Active" : "Inactive");
+
+                // Gửi lên server
+                $.post('@Url.Action("ToggleActive", "UserAdmin", new { area = "Admin" })',
+                    { id: userId, isActive: isActive },
+                    function(response){
+                        if(response.success){
+                            // alert(response.message); // có thể bỏ alert để không bị popup phiền
+                            console.log(response.message);
+                        } else {
+                            alert(response.message);
+                        }
+                    });
+            });
+        });
+
+    </script>
+}
