@@ -96,6 +96,7 @@
             display: none;
         }
     </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 
 <body>
@@ -133,6 +134,23 @@
                         <li>
 							<a class="nav-link" asp-controller="Create" asp-action="Create">Đăng bài</a>
                         </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link position-relative" href="#" id="notiDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-bell fs-5"></i>
+                                <span id="notiCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    0
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="notiDropdown" style="width: 320px;">
+                                <li class="dropdown-header fw-bold">Thông báo</li>
+                                    <div id="notiList">
+                                        <li class="text-center text-muted small p-2">Đang tải...</li>
+                                    </div>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-center" asp-controller="Noti" asp-action="Index">Xem tất cả</a></li>
+                            </ul>
+                        </li>
+
                         <!-- Mục “Đăng nhập” chỉ hiện trên mobile -->
                         <li class="nav-item mobile-login-item">
                             <a class="nav-link text-danger fw-semibold" asp-controller="User" asp-action="Login">
@@ -256,6 +274,66 @@
             });
         });
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <script>
+        function loadNotiCount() {
+            $.ajax({
+                url: '/Noti/Count',
+                type: 'GET',
+                success: function (data) {
+                    $('#notiCount').text(data.count);
+                    if (data.count === 0) {
+                        $('#notiCount').hide();
+                    } else {
+                        $('#notiCount').show();
+                    }
+                },
+                error: function () {
+                    console.log("Không thể tải số lượng thông báo");
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            loadNotiCount();
+            // Có thể tự động cập nhật mỗi 30 giây
+            setInterval(loadNotiCount, 30000);
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const notiList = document.getElementById("notiList");
+            const notiCount = document.getElementById("notiCount");
+
+            // Khi click chuông, load danh sách thông báo
+            document.getElementById("notiDropdown").addEventListener("click", function () {
+                fetch("/Noti/GetLatest")
+                    .then(res => res.json())
+                    .then(data => {
+                        notiList.innerHTML = "";
+                        if (data.length === 0) {
+                            notiList.innerHTML = `<li class="text-center text-muted small p-2">Không có thông báo mới</li>`;
+                            notiCount.textContent = "0";
+                        } else {
+                            data.forEach(n => {
+                                notiList.innerHTML += `
+                                    <li>
+                                        <a class="dropdown-item small ${n.isRead ? '' : 'fw-bold'}" href="#">
+                                            ${n.message}<br/>
+                                            <span class="text-muted" style="font-size: 0.8em;">${n.createAt}</span>
+                                        </a>
+                                    </li>`;
+                            });
+                            notiCount.textContent = data.filter(n => !n.isRead).length;
+                        }
+                    })
+                    .catch(err => {
+                        notiList.innerHTML = `<li class="text-danger small p-2 text-center">Lỗi tải dữ liệu</li>`;
+                    });
+            });
+        });
+    </script>
 </body>
 </html>

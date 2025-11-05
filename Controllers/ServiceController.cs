@@ -34,7 +34,7 @@ namespace BTL.Controllers
             // (Tôi đã đổi tên "id" thành "categoryId" cho dễ hiểu)
             if (categoryId.HasValue)
             {
-                query = query.Where(s => s.CategoryId == categoryId.Value);
+                query = query.Where(s => s.CategoryID == categoryId.Value);
             }
 
             // Lấy kết quả cuối cùng
